@@ -3,8 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="HW2.MainPage">
 
-    <StackLayout Padding="5">
-        <StackLayout.Resources>
+    
+    <Grid Padding="5">
+        <Grid.Resources>
             <ResourceDictionary>
                 <x:Array x:Key="testTexts" Type="{x:Type x:String}">
                     <x:String >Заметка 1</x:String>
@@ -12,17 +13,35 @@
                     <x:String >Заметка 3</x:String>
                 </x:Array>
             </ResourceDictionary>
-        </StackLayout.Resources>
-        <StackLayout BindableLayout.ItemsSource="{Binding Source={StaticResource testTexts}}" x:Name="notes">
-            <BindableLayout.ItemTemplate>
-                <DataTemplate>
-                    <Frame BorderColor="LightGray" CornerRadius="5">
-                        <Label Text="{Binding}"></Label>
-                    </Frame>
-                </DataTemplate>
-            </BindableLayout.ItemTemplate>
-        </StackLayout>
-        <Button Clicked="Button_Clicked"></Button>
-    </StackLayout>
+        </Grid.Resources>
+        <ScrollView>
+            <Grid HorizontalOptions="FillAndExpand">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                
+                <StackLayout x:Name="notes_left" HorizontalOptions="FillAndExpand" Grid.Column="0" VerticalOptions="Start">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Frame BorderColor="LightGray" CornerRadius="5">
+                                <Label Text="{Binding visible_text}"></Label>
+                            </Frame>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </StackLayout>
+                <StackLayout x:Name="notes_right" HorizontalOptions="FillAndExpand" Grid.Column="1" VerticalOptions="Start">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Frame BorderColor="LightGray" CornerRadius="5">
+                                <Label Text="{Binding visible_text}"></Label>
+                            </Frame>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </StackLayout>
+            </Grid>
+        </ScrollView>
+        <Button Clicked="Button_Clicked" CornerRadius="90" WidthRequest="70" HeightRequest="70" VerticalOptions="EndAndExpand" HorizontalOptions="EndAndExpand" Text="+" FontSize="Large" Margin="20"></Button>
+    </Grid>
 
 </ContentPage>
