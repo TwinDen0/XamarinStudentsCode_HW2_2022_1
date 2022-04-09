@@ -32,10 +32,15 @@ namespace HW2
 
             editor.Disappearing += (sender1, e1) =>
             {
-                var note = new Note { full_text = editor.text, visible_text = editor.text};
+                if (editor.text == "")
+                {
+                    return;
+                }
 
+                var note = new Note { full_text = editor.text, visible_text = editor.text};
                 var lines = note.full_text.Split('\n');
-                if(lines.Length > 10)
+                
+                if (lines.Length > 10)
                 {
                     note.visible_text = string.Join("\n", lines.Take(10));
 
@@ -55,7 +60,8 @@ namespace HW2
                 if(notes_left.Height <= notes_right.Height)
                 {
                     list_left.Add(note);
-                } else
+                } 
+                else
                 {
                     list_right.Add(note);
                 }
