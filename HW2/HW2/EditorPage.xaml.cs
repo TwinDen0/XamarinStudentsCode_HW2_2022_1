@@ -12,7 +12,7 @@ namespace HW2
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class EditorPage : ContentPage
     {
-        public string text;
+        public string text = "";
         public EditorPage()
         {
             InitializeComponent();
