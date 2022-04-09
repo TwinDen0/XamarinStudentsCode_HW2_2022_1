@@ -4,7 +4,7 @@
              x:Class="HW2.EditorPage">
     <ContentPage.Content>
         <StackLayout>
-            <Editor VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand" TextChanged="Editor_TextChanged"></Editor>
+            <Editor VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" TextChanged="Editor_TextChanged"></Editor>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
