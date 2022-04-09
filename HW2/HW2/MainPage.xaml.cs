@@ -21,8 +21,7 @@ namespace HW2
         public MainPage()
         {
             InitializeComponent();
-
-
+            SaveSystem.Load(out list_left, out list_right);
             BindableLayout.SetItemsSource(notes_left, list_left);
             BindableLayout.SetItemsSource(notes_right, list_right);
         }
@@ -60,7 +59,8 @@ namespace HW2
                 {
                     list_right.Add(note);
                 }
-                
+
+                SaveSystem.Save(list_left, list_right);
             };
             Navigation.PushAsync(editor);
         }
