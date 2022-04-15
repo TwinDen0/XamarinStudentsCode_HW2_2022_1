@@ -22,5 +22,10 @@ namespace HW2
         {
             text = e.NewTextValue;
         }
+
+        private void Button_Clicked(object sender, EventArgs e)
+        {
+            Navigation.PopAsync();
+        }
     }
 }
