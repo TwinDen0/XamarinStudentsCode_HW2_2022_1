@@ -13,6 +13,8 @@ namespace HW2
     {
         public string visible_text { get; set; }
         public string full_text { get; set; }
+        public string text_count { get => $"{full_text.Length} символов"; }
+        public string creation_data { get; set; }
     }
     public partial class MainPage : ContentPage
     {
@@ -37,7 +39,7 @@ namespace HW2
                     return;
                 }
 
-                var note = new Note { full_text = editor.text, visible_text = editor.text};
+                var note = new Note { full_text = editor.text, visible_text = editor.text, creation_data = DateTime.Now.ToString("d")};
                 var lines = note.full_text.Split('\n');
                 
                 if (lines.Length > 10)

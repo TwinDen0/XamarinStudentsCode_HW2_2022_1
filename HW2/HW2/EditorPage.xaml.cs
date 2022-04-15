@@ -18,9 +18,21 @@ namespace HW2
             InitializeComponent();
         }
 
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            editor.Focus();
+        }
+
         private void Editor_TextChanged(object sender, TextChangedEventArgs e)
         {
             text = e.NewTextValue;
+            count.Text = $"{e.NewTextValue.Length.ToString()} символов";
+        }
+
+        private void Button_Clicked(object sender, EventArgs e)
+        {
+            Navigation.PopAsync();
         }
     }
 }

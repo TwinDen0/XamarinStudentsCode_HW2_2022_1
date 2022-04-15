@@ -25,7 +25,11 @@
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
                             <Frame BorderColor="LightGray" CornerRadius="5">
-                                <Label Text="{Binding visible_text}"></Label>
+                                <StackLayout>
+                                    <Label Text="{Binding visible_text}" FontSize="Medium"></Label>
+                                    <Label Text="{Binding creation_data}" FontSize="Small" Margin="0, 0, 0, -8"></Label>
+                                    <Label Text="{Binding text_count}" FontSize="Small" Margin="0, 0, 0, -8"></Label>
+                                </StackLayout>
                             </Frame>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
@@ -34,7 +38,11 @@
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
                             <Frame BorderColor="LightGray" CornerRadius="5">
-                                <Label Text="{Binding visible_text}"></Label>
+                                <StackLayout>
+                                    <Label Text="{Binding visible_text}" FontSize="Medium"></Label>
+                                    <Label Text="{Binding creation_data}" FontSize="Small" Margin="0, 0, 0, -8"></Label>
+                                    <Label Text="{Binding text_count}" FontSize="Small" Margin="0, 0, 0, -8"></Label>
+                                </StackLayout>
                             </Frame>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
