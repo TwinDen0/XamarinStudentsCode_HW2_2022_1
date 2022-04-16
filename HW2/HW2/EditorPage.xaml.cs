@@ -12,10 +12,12 @@ namespace HW2
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class EditorPage : ContentPage
     {
-        public string text = "";
-        public EditorPage()
+        public string text;
+        public EditorPage(string text = "")
         {
             InitializeComponent();
+            this.text = text;
+            editor.Text = this.text;
         }
 
         protected override void OnAppearing()
