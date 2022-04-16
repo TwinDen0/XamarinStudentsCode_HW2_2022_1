@@ -24,7 +24,10 @@
                 <StackLayout x:Name="notes_left" HorizontalOptions="FillAndExpand" Grid.Column="0" VerticalOptions="Start">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
-                            <Frame BorderColor="LightGray" CornerRadius="5">
+                            <Frame BorderColor="LightGray" CornerRadius="5" ClassId="{Binding id}">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                                </Frame.GestureRecognizers>
                                 <StackLayout>
                                     <Label Text="{Binding visible_text}" FontSize="Medium"></Label>
                                     <Label Text="{Binding creation_data}" FontSize="Small" Margin="0, 0, 0, -8"></Label>
@@ -37,7 +40,10 @@
                 <StackLayout x:Name="notes_right" HorizontalOptions="FillAndExpand" Grid.Column="1" VerticalOptions="Start">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
-                            <Frame BorderColor="LightGray" CornerRadius="5">
+                            <Frame BorderColor="LightGray" CornerRadius="5" ClassId="{Binding id}">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                                </Frame.GestureRecognizers>
                                 <StackLayout>
                                     <Label Text="{Binding visible_text}" FontSize="Medium"></Label>
                                     <Label Text="{Binding creation_data}" FontSize="Small" Margin="0, 0, 0, -8"></Label>

@@ -11,10 +11,18 @@ namespace HW2
 {
     public class Note
     {
-        public string visible_text { get; set; }
+        private static int idCounter = 0;
+
+        public int id { get; }
+        public string visible_text { get => UIFixerSuperUtilsBazuka.Shorten(full_text, 120, 3); }
         public string full_text { get; set; }
         public string text_count { get => $"{full_text.Length} символов"; }
         public string creation_data { get; set; }
+
+        public Note()
+        {
+            id = ++idCounter;
+        }
     }
     public partial class MainPage : ContentPage
     {
@@ -32,32 +40,14 @@ namespace HW2
         {
             var editor = new EditorPage();
 
-            editor.Disappearing += (sender1, e1) =>
+            editor.Disappearing += (__, _) =>
             {
                 if (editor.text == "")
                 {
                     return;
                 }
 
-                var note = new Note { full_text = editor.text, visible_text = editor.text, creation_data = DateTime.Now.ToString("d")};
-                var lines = note.full_text.Split('\n');
-                
-                if (lines.Length > 10)
-                {
-                    note.visible_text = string.Join("\n", lines.Take(10));
-
-                }
-
-                if (note.visible_text.Length > 300)
-                {
-                    note.visible_text = note.visible_text.Remove(300);
-                    
-                }
-
-                if (note.visible_text != note.full_text)
-                {
-                    note.visible_text += "...";
-                }
+                var note = new Note { full_text = editor.text, creation_data = DateTime.Now.ToString("d")};
 
                 if(notes_left.Height <= notes_right.Height)
                 {
@@ -71,6 +61,32 @@ namespace HW2
                 SaveSystem.Save(list_left, list_right);
             };
             Navigation.PushAsync(editor);
+        }
+
+        private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            var id = (sender as Frame).ClassId;
+            foreach (var array in new[] { list_left, list_right }) {
+                foreach (var item in array)
+                {
+                    if (item.id.ToString() == id)
+                    {
+                        var editor = new EditorPage(item.full_text);
+
+                        editor.Disappearing += (__, _) =>
+                        {
+                            item.full_text = editor.text;
+                            SaveSystem.Save(list_left, list_right);
+                            BindableLayout.SetItemsSource(notes_left, new List<Note> { });
+                            BindableLayout.SetItemsSource(notes_right, new List<Note> { });
+                            BindableLayout.SetItemsSource(notes_left, list_left);
+                            BindableLayout.SetItemsSource(notes_right, list_right);
+                        };
+                        Navigation.PushAsync(editor);
+                        return;
+                    }
+                }
+            }
         }
     }
 
