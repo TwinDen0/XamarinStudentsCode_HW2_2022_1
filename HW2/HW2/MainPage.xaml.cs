@@ -11,10 +11,12 @@ namespace HW2
 {
     public class Note
     {
-        public string visible_text { get; set; }
+        public string visible_text { get => UIFixerSuperUtilsBazuka.Shorten(full_text, 120, 3); }
         public string full_text { get; set; }
         public string text_count { get => $"{full_text.Length} символов"; }
         public string creation_data { get; set; }
+
+
     }
     public partial class MainPage : ContentPage
     {
@@ -39,25 +41,7 @@ namespace HW2
                     return;
                 }
 
-                var note = new Note { full_text = editor.text, visible_text = editor.text, creation_data = DateTime.Now.ToString("d")};
-                var lines = note.full_text.Split('\n');
-                
-                if (lines.Length > 10)
-                {
-                    note.visible_text = string.Join("\n", lines.Take(10));
-
-                }
-
-                if (note.visible_text.Length > 300)
-                {
-                    note.visible_text = note.visible_text.Remove(300);
-                    
-                }
-
-                if (note.visible_text != note.full_text)
-                {
-                    note.visible_text += "...";
-                }
+                var note = new Note { full_text = editor.text, creation_data = DateTime.Now.ToString("d")};
 
                 if(notes_left.Height <= notes_right.Height)
                 {
