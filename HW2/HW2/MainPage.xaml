@@ -14,7 +14,7 @@
                 </x:Array>
             </ResourceDictionary>
         </Grid.Resources>
-        <ScrollView>
+        <ScrollView x:Name="scroll">
             <Grid HorizontalOptions="FillAndExpand">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -27,6 +27,7 @@
                             <Frame BorderColor="LightGray" CornerRadius="5" ClassId="{Binding id}">
                                 <Frame.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                                    <PanGestureRecognizer PanUpdated="PanGestureRecognizer_PanUpdated"/>
                                 </Frame.GestureRecognizers>
                                 <StackLayout>
                                     <Label Text="{Binding visible_text}" FontSize="Medium"></Label>

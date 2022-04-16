@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -86,6 +87,34 @@ namespace HW2
                         return;
                     }
                 }
+            }
+        }
+
+        private void PanGestureRecognizer_PanUpdated(object sender, PanUpdatedEventArgs e)
+        {
+            scroll.InputTransparent = true;
+            if (e.TotalX > 0) return;
+            var frame = (sender as Frame);
+            switch (e.StatusType) {
+                case GestureStatus.Running:
+                    frame.TranslationX = e.TotalX;
+                    break;
+                case GestureStatus.Completed:
+                case GestureStatus.Canceled:
+                    frame.TranslationX = 0;
+                    scroll.InputTransparent = false;
+                    Note note = list_left.FirstOrDefault(u => u.id.ToString() == frame.ClassId);
+                    Task.Run(() =>
+                    {
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            list_left.Remove(note);
+                        });
+                    });
+                    break;
+                default:
+                    frame.TranslationX = 0;
+                    break;
             }
         }
     }
