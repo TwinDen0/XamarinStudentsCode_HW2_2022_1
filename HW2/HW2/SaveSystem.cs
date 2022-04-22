@@ -9,35 +9,34 @@ namespace HW2
 {
     struct JsonData
     {
-        public ObservableCollection<Note> left;
-        public ObservableCollection<Note> right;
+        public List<Note> list;
     }
 
     static class SaveSystem
     {
         static string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "data");
 
-        public static void Save(in ObservableCollection<Note> notes_left, in ObservableCollection<Note> notes_right) 
+        public static void Save(in List<Note> list) 
         {
-            var obj = new JsonData { left = notes_left, right = notes_right };
+            var obj = new JsonData { list = list };
 
             var jsonString = JsonConvert.SerializeObject(obj);
 
             File.WriteAllText(path, jsonString);
         }
 
-        public static void Load(out ObservableCollection<Note> notes_left, out ObservableCollection<Note> notes_right)
+        public static void Load(out List<Note> list)
         {
-            notes_left = new ObservableCollection<Note>();
-            notes_right = new ObservableCollection<Note>();
+            list = new List<Note>();
 
             if (File.Exists(path))
             {
                 var jsonString = File.ReadAllText(path);
                 var obj = JsonConvert.DeserializeObject<JsonData>(jsonString);
-
-                notes_left = obj.left;
-                notes_right = obj.right;
+                if(obj.list != null)
+                {
+                    list = obj.list;
+                }
             }
         }
     }
