@@ -27,14 +27,41 @@ namespace HW2
     }
     public partial class MainPage : ContentPage
     {
+        List<Note> list_all = new List<Note>();
         ObservableCollection<Note> list_left = new ObservableCollection<Note>();
         ObservableCollection<Note> list_right = new ObservableCollection<Note>();
         public MainPage()
         {
             InitializeComponent();
-            SaveSystem.Load(out list_left, out list_right);
+            SaveSystem.Load(out list_all);
+            SortNotes();
             BindableLayout.SetItemsSource(notes_left, list_left);
             BindableLayout.SetItemsSource(notes_right, list_right);
+        }
+
+        private async void SortNotes()
+        {
+            list_left.Clear();
+            list_right.Clear();
+            await Task.Run(() =>
+            {
+                foreach (var note in list_all)
+                {
+                    Thread.Sleep(250);
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        if (notes_left.Height <= notes_right.Height)
+                        {
+                            list_left.Add(note);
+                        }
+                        else
+                        {
+                            list_right.Add(note);
+                        }
+                    });
+                }
+            });
+            
         }
 
         private void Button_Clicked(object sender, EventArgs e)
@@ -49,17 +76,11 @@ namespace HW2
                 }
 
                 var note = new Note { full_text = editor.text, creation_data = DateTime.Now.ToString("d")};
+                list_all.Add(note);
 
-                if(notes_left.Height <= notes_right.Height)
-                {
-                    list_left.Add(note);
-                } 
-                else
-                {
-                    list_right.Add(note);
-                }
+                SortNotes();
 
-                SaveSystem.Save(list_left, list_right);
+                SaveSystem.Save(list_all);
             };
             Navigation.PushAsync(editor);
         }
@@ -67,25 +88,23 @@ namespace HW2
         private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
             var id = (sender as Frame).ClassId;
-            foreach (var array in new[] { list_left, list_right }) {
-                foreach (var item in array)
+            foreach (var item in list_all)
+            {
+                if (item.id.ToString() == id)
                 {
-                    if (item.id.ToString() == id)
-                    {
-                        var editor = new EditorPage(item.full_text);
+                    var editor = new EditorPage(item.full_text);
 
-                        editor.Disappearing += (__, _) =>
-                        {
-                            item.full_text = editor.text;
-                            SaveSystem.Save(list_left, list_right);
-                            BindableLayout.SetItemsSource(notes_left, new List<Note> { });
-                            BindableLayout.SetItemsSource(notes_right, new List<Note> { });
-                            BindableLayout.SetItemsSource(notes_left, list_left);
-                            BindableLayout.SetItemsSource(notes_right, list_right);
-                        };
-                        Navigation.PushAsync(editor);
-                        return;
-                    }
+                    editor.Disappearing += (__, _) =>
+                    {
+                        item.full_text = editor.text;
+
+                        SortNotes();
+
+                        SaveSystem.Save(list_all);
+
+                    };
+                    Navigation.PushAsync(editor);
+                    return;
                 }
             }
         }
@@ -103,12 +122,13 @@ namespace HW2
                 case GestureStatus.Canceled:
                     frame.TranslationX = 0;
                     scroll.InputTransparent = false;
-                    Note note = list_left.FirstOrDefault(u => u.id.ToString() == frame.ClassId);
+                    Note note = list_all.FirstOrDefault(u => u.id.ToString() == frame.ClassId);
                     Task.Run(() =>
                     {
                         Device.BeginInvokeOnMainThread(() =>
                         {
-                            list_left.Remove(note);
+                            list_all.Remove(note);
+                            SortNotes();
                         });
                     });
                     break;
