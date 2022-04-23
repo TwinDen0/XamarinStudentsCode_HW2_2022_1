@@ -34,34 +34,35 @@ namespace HW2
         {
             InitializeComponent();
             SaveSystem.Load(out list_all);
-            SortNotes();
             BindableLayout.SetItemsSource(notes_left, list_left);
             BindableLayout.SetItemsSource(notes_right, list_right);
         }
 
-        private async void SortNotes()
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+            SortNotes();
+        }
+
+        private void SortNotes()
         {
             list_left.Clear();
             list_right.Clear();
-            await Task.Run(() =>
+
+            foreach (var note in list_all)
             {
-                foreach (var note in list_all)
+                if (notes_left.Height <= notes_right.Height)
                 {
-                    Thread.Sleep(250);
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        if (notes_left.Height <= notes_right.Height)
-                        {
-                            list_left.Add(note);
-                        }
-                        else
-                        {
-                            list_right.Add(note);
-                        }
-                    });
+                    list_left.Add(note);
                 }
-            });
-            
+                else
+                {
+                    list_right.Add(note);
+                }
+                notes_left.ResolveLayoutChanges();
+                notes_right.ResolveLayoutChanges();
+            }
+
         }
 
         private void Button_Clicked(object sender, EventArgs e)
