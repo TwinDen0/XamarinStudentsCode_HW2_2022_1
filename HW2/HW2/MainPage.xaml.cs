@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -112,33 +109,60 @@ namespace HW2
 
         private void PanGestureRecognizer_PanUpdated(object sender, PanUpdatedEventArgs e)
         {
+            FramePanUpdated(sender, e, true);
+        }
+
+        private void PanGestureRecognizer_PanUpdated_1(object sender, PanUpdatedEventArgs e)
+        {
+            FramePanUpdated(sender, e, false);
+        }
+
+        private void FramePanUpdated(object sender, PanUpdatedEventArgs e, bool isLeft)
+        {
+            if (isLeft && e.TotalX > 0) return;
+            if (!isLeft && e.TotalX < 0) return;
+
             scroll.InputTransparent = true;
-            if (e.TotalX > 0) return;
             var frame = (sender as Frame);
-            switch (e.StatusType) {
+            double offset = frame.Width * 0.125;
+
+            switch (e.StatusType)
+            {
                 case GestureStatus.Running:
                     frame.TranslationX = e.TotalX;
                     break;
                 case GestureStatus.Completed:
+                
                 case GestureStatus.Canceled:
-                    frame.TranslationX = 0;
-                    scroll.InputTransparent = false;
-                    Note note = list_all.FirstOrDefault(u => u.id.ToString() == frame.ClassId);
-                    Task.Run(() =>
+                    if (Math.Abs(frame.TranslationX) < offset)
                     {
-                        Device.BeginInvokeOnMainThread(() =>
+                        frame.TranslateTo(0, 0, 250);
+                    }
+                    else
+                    {
+                        frame.TranslationX = 0;
+                        scroll.InputTransparent = false;
+                        Note note = list_all.FirstOrDefault(u => u.id.ToString() == frame.ClassId);
+                        Task.Run(() =>
                         {
-                            list_all.Remove(note);
-                            SortNotes();
+                            Device.BeginInvokeOnMainThread(() =>
+                            {
+                                DisplayAlert("Delation title", "Are you sure?", "Yes", "No", FlowDirection.RightToLeft).ContinueWith(async x => { 
+                                    if (await x) 
+                                    {
+                                        list_all.Remove(note);
+                                        SortNotes();
+                                    }
+                                });
+                            });
                         });
-                    });
+                    }
                     break;
                 default:
                     frame.TranslationX = 0;
                     break;
+
             }
         }
     }
-
-    
 }
