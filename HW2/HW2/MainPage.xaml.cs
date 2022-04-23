@@ -124,12 +124,12 @@ namespace HW2
 
             scroll.InputTransparent = true;
             var frame = (sender as Frame);
-            double offset = frame.Width * 0.125;
+            double offset = frame.Width * 0.25;
 
             switch (e.StatusType)
             {
                 case GestureStatus.Running:
-                    frame.TranslationX = e.TotalX;
+                    frame.TranslationX = Math.Min(offset + 1, e.TotalX);
                     break;
                 case GestureStatus.Completed:
                 
