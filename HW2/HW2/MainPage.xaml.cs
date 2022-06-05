@@ -68,7 +68,7 @@ namespace HW2
 
             editor.Disappearing += (__, _) =>
             {
-                if (editor.text == "")
+                if (editor.text == "" || editor.addNew == false)
                 {
                     return;
                 }

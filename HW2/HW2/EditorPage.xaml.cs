@@ -8,6 +8,7 @@ namespace HW2
     public partial class EditorPage : ContentPage
     {
         public string text;
+        public bool addNew = false;
         public EditorPage(string text = "")
         {
             InitializeComponent();
@@ -29,6 +30,7 @@ namespace HW2
 
         private void Button_Clicked(object sender, EventArgs e)
         {
+            addNew = true;
             Navigation.PopAsync();
         }
     }
