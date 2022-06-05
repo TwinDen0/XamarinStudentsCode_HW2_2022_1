@@ -151,6 +151,7 @@ namespace HW2
                                     if (await x) 
                                     {
                                         list_all.Remove(note);
+                                        SaveSystem.Save(list_all);
                                         SortNotes();
                                     }
                                 });
