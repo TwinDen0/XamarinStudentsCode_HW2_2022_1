@@ -96,7 +96,13 @@ namespace HW2
                     {
                         item.full_text = editor.text;
 
-                        SortNotes();
+                        Task.Run(() =>
+                        {
+                            Device.BeginInvokeOnMainThread(() =>
+                            {
+                                SortNotes();
+                            });
+                        });
 
                         SaveSystem.Save(list_all);
 
@@ -150,9 +156,12 @@ namespace HW2
                                 DisplayAlert("Delation title", "Are you sure?", "Yes", "No", FlowDirection.RightToLeft).ContinueWith(async x => { 
                                     if (await x) 
                                     {
-                                        list_all.Remove(note);
-                                        SaveSystem.Save(list_all);
-                                        SortNotes();
+                                        Device.BeginInvokeOnMainThread(() =>
+                                        {
+                                            list_all.Remove(note);
+                                            SaveSystem.Save(list_all);
+                                            SortNotes();
+                                        });
                                     }
                                 });
                             });
