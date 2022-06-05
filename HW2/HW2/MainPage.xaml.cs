@@ -48,7 +48,7 @@ namespace HW2
 
             foreach (var note in list_all)
             {
-                if (notes_left.Height <= notes_right.Height)
+                if (notes_left.Height <= notes_right.Height || list_left.Count == 0)
                 {
                     list_left.Add(note);
                 }
