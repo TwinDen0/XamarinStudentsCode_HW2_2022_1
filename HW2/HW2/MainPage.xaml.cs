@@ -48,7 +48,7 @@ namespace HW2
 
             foreach (var note in list_all)
             {
-                if (notes_left.Height <= notes_right.Height)
+                if (notes_left.Height <= notes_right.Height || list_left.Count == 0)
                 {
                     list_left.Add(note);
                 }
@@ -68,7 +68,7 @@ namespace HW2
 
             editor.Disappearing += (__, _) =>
             {
-                if (editor.text == "")
+                if (editor.text == "" || editor.addNew == false)
                 {
                     return;
                 }
@@ -96,7 +96,13 @@ namespace HW2
                     {
                         item.full_text = editor.text;
 
-                        SortNotes();
+                        Task.Run(() =>
+                        {
+                            Device.BeginInvokeOnMainThread(() =>
+                            {
+                                SortNotes();
+                            });
+                        });
 
                         SaveSystem.Save(list_all);
 
@@ -150,8 +156,12 @@ namespace HW2
                                 DisplayAlert("Delation title", "Are you sure?", "Yes", "No", FlowDirection.RightToLeft).ContinueWith(async x => { 
                                     if (await x) 
                                     {
-                                        list_all.Remove(note);
-                                        SortNotes();
+                                        Device.BeginInvokeOnMainThread(() =>
+                                        {
+                                            list_all.Remove(note);
+                                            SaveSystem.Save(list_all);
+                                            SortNotes();
+                                        });
                                     }
                                 });
                             });
