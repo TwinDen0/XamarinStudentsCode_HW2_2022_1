@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -13,6 +8,7 @@ namespace HW2
     public partial class EditorPage : ContentPage
     {
         public string text;
+        public bool addNew = false;
         public EditorPage(string text = "")
         {
             InitializeComponent();
@@ -34,6 +30,7 @@ namespace HW2
 
         private void Button_Clicked(object sender, EventArgs e)
         {
+            addNew = true;
             Navigation.PopAsync();
         }
     }

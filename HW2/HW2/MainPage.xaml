@@ -24,17 +24,24 @@
                 <StackLayout x:Name="notes_left" HorizontalOptions="FillAndExpand" Grid.Column="0" VerticalOptions="Start">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
-                            <Frame BorderColor="LightGray" CornerRadius="5" ClassId="{Binding id}">
-                                <Frame.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
-                                    <PanGestureRecognizer PanUpdated="PanGestureRecognizer_PanUpdated"/>
-                                </Frame.GestureRecognizers>
-                                <StackLayout>
-                                    <Label Text="{Binding visible_text}" FontSize="Medium"></Label>
-                                    <Label Text="{Binding creation_data}" FontSize="Small" Margin="0, 0, 0, -8"></Label>
-                                    <Label Text="{Binding text_count}" FontSize="Small" Margin="0, 0, 0, -8"></Label>
-                                </StackLayout>
-                            </Frame>
+                            <Grid>
+                                <AbsoluteLayout>
+                                    <Frame CornerRadius="5" AbsoluteLayout.LayoutBounds="1, 0, 0.5, 1" AbsoluteLayout.LayoutFlags="All" Padding="0">
+                                        <Image Aspect="AspectFill" Source="bin.png" HeightRequest="1"/>
+                                    </Frame>
+                                </AbsoluteLayout>
+                                <Frame BorderColor="LightGray" CornerRadius="5" ClassId="{Binding id}">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                                        <PanGestureRecognizer PanUpdated="PanGestureRecognizer_PanUpdated"/>
+                                    </Frame.GestureRecognizers>
+                                    <StackLayout>
+                                        <Label Text="{Binding visible_text}" FontSize="Medium"></Label>
+                                        <Label Text="{Binding creation_data}" FontSize="Small" Margin="0, 0, 0, -8"></Label>
+                                        <Label Text="{Binding text_count}" FontSize="Small" Margin="0, 0, 0, -8"></Label>
+                                    </StackLayout>
+                                </Frame>
+                            </Grid>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </StackLayout>
@@ -44,6 +51,7 @@
                             <Frame BorderColor="LightGray" CornerRadius="5" ClassId="{Binding id}">
                                 <Frame.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                                    <PanGestureRecognizer PanUpdated="PanGestureRecognizer_PanUpdated_1"/>
                                 </Frame.GestureRecognizers>
                                 <StackLayout>
                                     <Label Text="{Binding visible_text}" FontSize="Medium"></Label>

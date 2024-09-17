@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -34,34 +31,35 @@ namespace HW2
         {
             InitializeComponent();
             SaveSystem.Load(out list_all);
-            SortNotes();
             BindableLayout.SetItemsSource(notes_left, list_left);
             BindableLayout.SetItemsSource(notes_right, list_right);
         }
 
-        private async void SortNotes()
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+            SortNotes();
+        }
+
+        private void SortNotes()
         {
             list_left.Clear();
             list_right.Clear();
-            await Task.Run(() =>
+
+            foreach (var note in list_all)
             {
-                foreach (var note in list_all)
+                if (notes_left.Height <= notes_right.Height || list_left.Count == 0)
                 {
-                    Thread.Sleep(250);
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        if (notes_left.Height <= notes_right.Height)
-                        {
-                            list_left.Add(note);
-                        }
-                        else
-                        {
-                            list_right.Add(note);
-                        }
-                    });
+                    list_left.Add(note);
                 }
-            });
-            
+                else
+                {
+                    list_right.Add(note);
+                }
+                notes_left.ResolveLayoutChanges();
+                notes_right.ResolveLayoutChanges();
+            }
+
         }
 
         private void Button_Clicked(object sender, EventArgs e)
@@ -70,7 +68,7 @@ namespace HW2
 
             editor.Disappearing += (__, _) =>
             {
-                if (editor.text == "")
+                if (editor.text == "" || editor.addNew == false)
                 {
                     return;
                 }
@@ -98,7 +96,13 @@ namespace HW2
                     {
                         item.full_text = editor.text;
 
-                        SortNotes();
+                        Task.Run(() =>
+                        {
+                            Device.BeginInvokeOnMainThread(() =>
+                            {
+                                SortNotes();
+                            });
+                        });
 
                         SaveSystem.Save(list_all);
 
@@ -111,33 +115,64 @@ namespace HW2
 
         private void PanGestureRecognizer_PanUpdated(object sender, PanUpdatedEventArgs e)
         {
+            FramePanUpdated(sender, e, true);
+        }
+
+        private void PanGestureRecognizer_PanUpdated_1(object sender, PanUpdatedEventArgs e)
+        {
+            FramePanUpdated(sender, e, false);
+        }
+
+        private void FramePanUpdated(object sender, PanUpdatedEventArgs e, bool isLeft)
+        {
+            if (isLeft && e.TotalX > 0) return;
+            if (!isLeft && e.TotalX < 0) return;
+
             scroll.InputTransparent = true;
-            if (e.TotalX > 0) return;
             var frame = (sender as Frame);
-            switch (e.StatusType) {
+            double offset = frame.Width * 0.25;
+
+            switch (e.StatusType)
+            {
                 case GestureStatus.Running:
-                    frame.TranslationX = e.TotalX;
+                    frame.TranslationX = Math.Min(offset + 1, e.TotalX);
                     break;
                 case GestureStatus.Completed:
+                
                 case GestureStatus.Canceled:
-                    frame.TranslationX = 0;
-                    scroll.InputTransparent = false;
-                    Note note = list_all.FirstOrDefault(u => u.id.ToString() == frame.ClassId);
-                    Task.Run(() =>
+                    if (Math.Abs(frame.TranslationX) < offset)
                     {
-                        Device.BeginInvokeOnMainThread(() =>
+                        frame.TranslateTo(0, 0, 250);
+                    }
+                    else
+                    {
+                        frame.TranslationX = 0;
+                        scroll.InputTransparent = false;
+                        Note note = list_all.FirstOrDefault(u => u.id.ToString() == frame.ClassId);
+                        Task.Run(() =>
                         {
-                            list_all.Remove(note);
-                            SortNotes();
+                            Device.BeginInvokeOnMainThread(() =>
+                            {
+                                DisplayAlert("Delation title", "Are you sure?", "Yes", "No", FlowDirection.RightToLeft).ContinueWith(async x => { 
+                                    if (await x) 
+                                    {
+                                        Device.BeginInvokeOnMainThread(() =>
+                                        {
+                                            list_all.Remove(note);
+                                            SaveSystem.Save(list_all);
+                                            SortNotes();
+                                        });
+                                    }
+                                });
+                            });
                         });
-                    });
+                    }
                     break;
                 default:
                     frame.TranslationX = 0;
                     break;
+
             }
         }
     }
-
-    
 }
